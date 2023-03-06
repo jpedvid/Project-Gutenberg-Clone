@@ -17,6 +17,6 @@ app.use(express.json());
 app.use("/api/users",usersRouter);
 app.use("/api/books",booksRouter);
 app.use("/api/bookshelves",bookshelfRouter);
-app.listen(9000,function(){
+app.listen(process.env.PORT||9000,function(){
     console.log("server started");
 });
