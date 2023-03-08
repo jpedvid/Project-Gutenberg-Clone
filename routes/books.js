@@ -53,7 +53,11 @@ router.get("/bookshelf/:bookshelf",async(req,res)=>{
 });
 router.get("/author/:author",async(req,res)=>{
     try{
-        let o = await Book.find({Authors:{$regex:req.params.author}});
+        let o = await Book.find({"Authors":{$regex: req.params.author,$options: 'i'}}).then((data)=>{
+            console.log(data);
+            return data;
+        }).catch((e)=>{console.error(e);});
+
         o ? res.json(o) : res.status(404).json({"message":"resource not found"});
     }catch (err){
         console.error(err);
