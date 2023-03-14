@@ -53,10 +53,21 @@ router.get("/bookshelf/:bookshelf",async(req,res)=>{
 });
 router.get("/author/:author",async(req,res)=>{
     try{
-        let o = await Book.find({"Authors":{$regex: req.params.author,$options: 'i'}}).then((data)=>{
-            console.log(data);
-            return data;
-        }).catch((e)=>{console.error(e);});
+        let auth = req.params.author;
+        if(auth.includes(" ") && !auth.includes(",")) {
+            let names = auth.split(" ");
+            var o = await Book.find({"Authors": {$regex: `${names[1]}, ${names[0]}`, $options: 'i'}}).then((data) => {
+                return data;
+            }).catch((e)=>{console.error(e);});
+        }
+        else{
+            if(auth.includes(",")){
+                var o = await Book.find({"Authors":{$regex: req.params.author,$options: 'i'}}).then((data)=>{
+                    return data;
+                }).catch((e)=>{console.error(e);});
+            }
+        }
+
 
         o ? res.json(o) : res.status(404).json({"message":"resource not found"});
     }catch (err){
